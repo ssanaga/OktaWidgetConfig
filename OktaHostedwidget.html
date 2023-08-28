@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow" />
+    <!-- Styles generated from theme -->
+    <link href="{{themedStylesUrl}}" rel="stylesheet" type="text/css">
+    <!-- Favicon from theme -->
+    <link rel="shortcut icon" href="{{faviconUrl}}" type="image/x-icon" />
+
+    <title>{{pageTitle}}</title>
+    {{{SignInWidgetResources}}}
+
+
+</head>
+
+<body>
+    <div id="login-bg-image-id" class="login-bg-image tb--background"></div>
+    <div id="okta-login-container"></div>
+
+    <!--
+        "OktaUtil" defines a global OktaUtil object
+        that contains methods used to complete the Okta login flow.
+     -->
+    {{{OktaUtil}}}
+
+    <script type="text/javascript" nonce="{{nonceValue}}">
+        // "config" object contains default widget configuration
+        // with any custom overrides defined in your admin settings.
+
+
+
+        function getClientId() {
+            if (!OktaUtil) return undefined;
+
+            var requestContext = OktaUtil.getRequestContext();
+            if (requestContext && requestContext.app && requestContext.app.value.id) {
+                return requestContext.app.value.id;
+            }
+        }
+        var clientId = getClientId();
+
+
+        // add application-specific CSS
+        var head = document.head;
+        var link = document.createElement('link');
+
+        link.type = 'text/css';
+        link.rel = 'stylesheet';
+        link.href = 'https://ssowmya.s3.us-east-2.amazonaws.com/' + clientId + '.css';
+        console.log('Printing client link ' + link.href);
+        head.appendChild(link);
+        var config = OktaUtil.getSignInWidgetConfig();
+
+        if (clientId === '0oa45db4hqhBIrdYE697') //Exxon Mobile
+            config.logo = 'https://corporate.exxonmobil.com/-/media/global/icons/logos/exxonmobillogocolor2x.png';
+        else if (clientId === '0oa5c4fu3nQvFDqRu697') //Air Bp
+            config.logo = 'https://images.ctfassets.net/ws534zpbdt5b/4ZGt0Le7TW3sCbgdu1gL8D/a8362e9746dd2835332dd786e89da3f0/air-bp-logo-card.png?q=80&fm=webp';
+
+        // Render the Okta Sign-In Widget
+        var oktaSignIn = new OktaSignIn(config);
+        oktaSignIn.renderEl({ el: '#okta-login-container' },
+            OktaUtil.completeLogin,
+            function (error) {
+                // Logs errors that occur when configuring the widget.
+                // Remove or replace this with your own custom error handler.
+                console.log(error.message, error);
+            }
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>
